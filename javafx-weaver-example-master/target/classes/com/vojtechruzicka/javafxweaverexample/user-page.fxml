@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TabPane prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Мои машина">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Button layoutX="459.0" layoutY="36.0" mnemonicParsing="false" text="Добавить" />
+                        <Button layoutX="459.0" layoutY="104.0" mnemonicParsing="false" text="Редактировать" />
+                        <Button layoutX="459.0" layoutY="174.0" mnemonicParsing="false" text="Удалить" />
+                        <Button layoutX="459.0" layoutY="240.0" mnemonicParsing="false" text="Поиск" />
+                        <MenuButton layoutX="459.0" layoutY="304.0" mnemonicParsing="false" text="Фильтр">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="Action 1" />
+                            <MenuItem mnemonicParsing="false" text="Action 2" />
+                          </items>
+                        </MenuButton>
+                        <TableView prefHeight="372.0" prefWidth="459.0">
+                          <columns>
+                            <TableColumn prefWidth="75.0" text="Id" />
+                              <TableColumn prefWidth="75.0" text="Марка" />
+                              <TableColumn prefWidth="149.5999755859375" text="Серийный номер" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Автостоянка">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView prefHeight="371.0" prefWidth="459.0">
+                          <columns>
+                            <TableColumn prefWidth="75.0" text="Id" />
+                            <TableColumn prefWidth="75.0" text="Марка" />
+                              <TableColumn prefWidth="133.5999755859375" text="Серийный номер" />
+                              <TableColumn prefWidth="174.40001220703124" text="Владелец" />
+                          </columns>
+                        </TableView>
+                        <Button layoutX="459.0" layoutY="43.0" mnemonicParsing="false" text="Добавить" />
+                        <Button layoutX="459.0" layoutY="173.0" mnemonicParsing="false" text="Забрать машину" />
+                        <Button layoutX="549.0" layoutY="246.0" mnemonicParsing="false" text="Поиск" />
+                        <MenuButton layoutX="459.0" layoutY="311.0" mnemonicParsing="false" text="Фильтр">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="Action 1" />
+                            <MenuItem mnemonicParsing="false" text="Action 2" />
+                          </items>
+                        </MenuButton>
+                        <TextField layoutX="460.0" layoutY="245.0" prefHeight="26.0" prefWidth="90.0" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</Pane>
