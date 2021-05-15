@@ -1,5 +1,6 @@
 package com.vojtechruzicka.javafxweaverexample;
 
+import com.vojtechruzicka.javafxweaverexample.controller.LoginController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Parent;
@@ -25,11 +26,11 @@ public class JavaFxApplication extends Application {
     @Override
     public void start(Stage stage) {
         FxWeaver fxWeaver = applicationContext.getBean(FxWeaver.class);
-        Parent root = fxWeaver.loadView(MyController.class);
+        Parent root = fxWeaver.loadView(LoginController.class);
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-        applicationContext.getBean(MyController .class).setStage(stage);
+        applicationContext.getBean(LoginController.class).setStage(stage);
     }
 
     @Override
@@ -37,5 +38,4 @@ public class JavaFxApplication extends Application {
         this.applicationContext.close();
         Platform.exit();
     }
-
 }

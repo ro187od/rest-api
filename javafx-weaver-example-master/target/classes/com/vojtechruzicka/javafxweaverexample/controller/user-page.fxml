@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<?import javafx.scene.control.TextField?>
+<AnchorPane
+        fx:controller="com.vojtechruzicka.javafxweaverexample.controller.UserPageController"
+        maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TabPane prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Мои машины">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="171.0" prefWidth="367.0">
+                     <children>
+                        <TableView fx:id="tableMyCars" prefHeight="378.0" prefWidth="465.0">
+                          <columns>
+                            <TableColumn  prefWidth="75.0" fx:id="idColumn" text="Id" />
+                            <TableColumn onEditCommit="#onEditChange" prefWidth="75.0" fx:id="brandColumn" text="Марка" />
+                              <TableColumn prefWidth="148.00006103515625" fx:id="serialColumn" text="Серийный номер" />
+                          </columns>
+                        </TableView>
+                        <Button layoutX="466.0" layoutY="65.0" onAction="#handleCreateCar" mnemonicParsing="false" text="Button" />
+                         <Button layoutX="466.0" layoutY="122" onAction="#handleDeleteCar" mnemonicParsing="false" text="Button" />
+                         <TextField id="filterField" fx:id="filterFieldMyCars" layoutX="466.0" layoutY="175.0" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Автостоянка">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="tableAllCars" prefHeight="378.0" prefWidth="465.0">
+                           <columns>
+                              <TableColumn fx:id="parkingAutoBrandColumn" prefWidth="75.0" text="Марка" />
+                           </columns>
+                        </TableView>
+                        <Button layoutX="466.0" layoutY="72.0" mnemonicParsing="false" text="Button" />
+                         <Button layoutX="466.0" layoutY="122.0" onAction="#deactivateParking" mnemonicParsing="false" text="Забрать" />
+                         <TextField id="filterField" fx:id="filterField" layoutX="466.0" layoutY="175.0" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>
