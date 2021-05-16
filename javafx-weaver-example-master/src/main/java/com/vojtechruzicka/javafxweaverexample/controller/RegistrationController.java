@@ -40,18 +40,11 @@ public class RegistrationController extends DefaultJavaFXController {
     public void signup(){
 
         User user = new User(username.getText(), password.getText(), Role.USER);
-        userRepo.usersData.add(user);
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//        RestTemplate restTemplate = new RestTemplate();
-//
-//        // Data attached to the request.
-//        HttpEntity<User> requestBody = new HttpEntity<>(user, headers);
-//        Boolean result = restTemplate.postForObject(
-//                "http://localhost:8081/users/register", requestBody, Boolean.class);
-        if(user.getUsername() != null){
+        HttpEntity<User> requestBody = new HttpEntity<>(user, getHttpHeaders());
+        Boolean result = restTemplate.postForObject(
+                "http://localhost:8082/users/register", requestBody, Boolean.class);
+
+        if(user != null){
             Parent root = fxWeaver.loadView(LoginController.class);
             Stage stage = new Stage();
             Scene scene = new Scene(root);
@@ -59,4 +52,12 @@ public class RegistrationController extends DefaultJavaFXController {
             stage.show();
         }
     }
+
+    private HttpHeaders getHttpHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return headers;
+    }
+
 }

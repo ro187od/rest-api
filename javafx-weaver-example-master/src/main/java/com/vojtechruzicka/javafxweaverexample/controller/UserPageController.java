@@ -20,6 +20,10 @@ import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Component
 @FxmlView("user-page.fxml")
 public class UserPageController extends DefaultJavaFXController  {
@@ -58,13 +62,10 @@ public class UserPageController extends DefaultJavaFXController  {
 
     @FXML
     private void initialize() {
-        userRepo.initData();
-
-        User user = userRepo.usersData.get(0);
-        User admin = userRepo.usersData.get(1);
-
-        carsRepo.initData(user, admin);
-
+        carsRepo.init();
+        carsRepo.init();
+        ObservableList<Car> myCars = carsRepo.getMyCars();
+        ObservableList<Car> carsInParkong = carsRepo.getCarsDataActiveCars();
         idColumn.setCellValueFactory(new PropertyValueFactory<Car, Integer>("id"));
         brandColumn.setCellValueFactory(new PropertyValueFactory<Car, String>("brand"));
         serialColumn.setCellValueFactory(new PropertyValueFactory<Car, String>("serial_number"));
@@ -73,9 +74,9 @@ public class UserPageController extends DefaultJavaFXController  {
 
         brandColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        FilteredList<Car> filteredDataMyCars = getCarFilteredList(carsRepo.myCars, filterFieldMyCars);
+        FilteredList<Car> filteredDataMyCars = getCarFilteredList(myCars, filterFieldMyCars);
 
-        FilteredList<Car> filteredData = getCarFilteredList(carsRepo.usersDataActiveCars, filterField);
+        FilteredList<Car> filteredData = getCarFilteredList(carsInParkong, filterField);
 
         SortedList<Car> sortedDataMyCars = getSortedList(filteredDataMyCars);
         SortedList<Car> sortedData = getSortedList(filteredData);
@@ -96,17 +97,29 @@ public class UserPageController extends DefaultJavaFXController  {
 
     @FXML
     private void handleDeleteCar() {
-        tableMyCars.setItems(carsRepo.myCars);
-        tableMyCars.getItems().removeAll(tableMyCars.getSelectionModel().getSelectedItem());
+        Map< String, String > params = new HashMap<String,String>();
+        params.put("id", String.valueOf(tableMyCars.getSelectionModel().getSelectedItem().getId()));
+        String.valueOf(tableAllCars.getSelectionModel().getSelectedItem());
+        restTemplate.delete("http://localhost:8082/car/{id}", params);
+        carsRepo.init();
     }
 
     @FXML
     private void deactivateParking() {
-        tableAllCars.setItems(carsRepo.usersDataActiveCars);
-        if(userRepo.usersData.get(0) == tableAllCars.getSelectionModel().getSelectedItem().getUser()) {
-            tableAllCars.getItems().removeAll(tableAllCars.getSelectionModel().getSelectedItem());
-            tableAllCars.getSelectionModel().getSelectedItem().setActiveParking(false);
-        }
+        Car car = tableAllCars.getSelectionModel().getSelectedItem();
+        Map<String, String> params=  new HashMap<String, String>();
+        params.put("id", String.valueOf(tableAllCars.getSelectionModel().getSelectedItem().getId()));
+        restTemplate.put("http://localhost:8082/car/deactivate/{id}", car, params);
+        carsRepo.init();
+    }
+
+    @FXML
+    private void activateParking() {
+        Car car = tableMyCars.getSelectionModel().getSelectedItem();
+        Map<String, String> params=  new HashMap<String, String>();
+        params.put("id", String.valueOf(tableMyCars.getSelectionModel().getSelectedItem().getId()));
+        restTemplate.put("http://localhost:8082/car/activate/{id}", car, params);
+        carsRepo.init();
     }
 
     @FXML
@@ -119,5 +132,8 @@ public class UserPageController extends DefaultJavaFXController  {
     public void onEditChange(TableColumn.CellEditEvent<Car, String> carStringCellEditEvent) {
         Car car = tableMyCars.getSelectionModel().getSelectedItem();
         car.setBrand(carStringCellEditEvent.getNewValue());
+        Map<String, String> params=  new HashMap<String, String>();
+        params.put("id", String.valueOf(car.getId()));
+        restTemplate.put("http://localhost:8082/car/update/{id}", car, params);
     }
 }

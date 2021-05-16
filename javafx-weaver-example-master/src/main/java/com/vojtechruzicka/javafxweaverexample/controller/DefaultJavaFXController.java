@@ -11,6 +11,8 @@ import net.rgielen.fxweaver.core.FxWeaver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
+
 
 public abstract class DefaultJavaFXController {
 
@@ -58,8 +60,6 @@ public abstract class DefaultJavaFXController {
                 String lowerCaseFilter = newValue.toLowerCase();
 
                 if (car.getBrand().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                } else if (car.getSerial_number().toLowerCase().contains(lowerCaseFilter)) {
                     return true;
                 }
                 return false;

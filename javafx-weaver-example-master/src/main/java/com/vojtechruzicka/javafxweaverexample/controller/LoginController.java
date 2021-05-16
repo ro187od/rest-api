@@ -32,13 +32,14 @@ public class LoginController extends DefaultJavaFXController {
         // Data attached to the request.
         HttpEntity<User> requestBody = new HttpEntity<>(user, getHttpHeaders());
 
-//        User result = restTemplate.postForObject(
-//                "http://localhost:8081/login", requestBody, User.class);
-//
-//        System.out.println(result);
-        User result = new User();
-        if (result != null){
+        User result = restTemplate.postForObject(
+                "http://localhost:8082/users/login", requestBody, User.class);
+
+        System.out.println(result);
+        if (result.getRole() == Role.ADMIN){
             showCurrentStageWindow(AdminPageController.class, UserPageController.TITLE);
+        }else if (result.getRole() == Role.USER){
+            showCurrentStageWindow(UserPageController.class, UserPageController.TITLE);
         }
     }
 

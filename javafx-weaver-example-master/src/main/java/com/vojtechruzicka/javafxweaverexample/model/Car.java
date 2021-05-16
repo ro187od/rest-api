@@ -1,43 +1,31 @@
 package com.vojtechruzicka.javafxweaverexample.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 public class Car {
-
-    private int id;
+    @JsonProperty("id")
+    private Long id;
+    @JsonProperty("brand")
     private String brand;
-    private String serial_number;
-    private User user;
-    private boolean activeParking;
+    @JsonProperty("owner")
+    private User owner;
+    @JsonProperty("active")
+    private boolean active;
 
-    public Car(int id, String brand, String serial_number, User user) {
-        this.activeParking = true;
-        this.user = user;
-        this.id = id;
+    public Car(String brand, User owner) {
+        this.active = true;
+        this.owner = owner;
         this.brand = brand;
-        this.serial_number = serial_number;
     }
 
-    public User getUser() {
-        return user;
-    }
+    public Car(){}
 
-    public boolean isActiveParking() {
-        return activeParking;
-    }
-
-    public void setActiveParking(boolean activeParking) {
-        this.activeParking = activeParking;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -49,11 +37,19 @@ public class Car {
         this.brand = brand;
     }
 
-    public String getSerial_number() {
-        return serial_number;
+    public User getOwner() {
+        return owner;
     }
 
-    public void setSerial_number(String serial_number) {
-        this.serial_number = serial_number;
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

@@ -9,11 +9,14 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 @Component
 @FxmlView("form_admin.fxml")
-public class CreateAdminController extends DefaultJavaFXController{
+public class CreateAdminController extends DefaultJavaFXController {
 
     @Autowired
     private UserRepo userRepo;
@@ -27,14 +30,25 @@ public class CreateAdminController extends DefaultJavaFXController{
     @FXML
     public Button saveButtom;
 
+    public CreateAdminController() {
+    }
+
 
     @FXML
-    public void save(){
+    public void save() {
         User user = new User(username.getText(), password.getText(), Role.ADMIN);
-        userRepo.usersData.add(user);
-        userRepo.sortRole();
+        HttpEntity<User> requestBody = new HttpEntity<>(user, getHttpHeaders());
+        Boolean result = restTemplate.postForObject(
+                "http://localhost:8082/users/register", requestBody, Boolean.class);
+        userRepo.setAdmins();
         Stage stage = (Stage) saveButtom.getScene().getWindow();
         stage.close();
     }
 
+    private HttpHeaders getHttpHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return headers;
+    }
 }

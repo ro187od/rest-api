@@ -3,7 +3,9 @@ package com.vojtechruzicka.javafxweaverexample.controller;
 import com.vojtechruzicka.javafxweaverexample.model.Car;
 import com.vojtechruzicka.javafxweaverexample.model.User;
 import com.vojtechruzicka.javafxweaverexample.repo.CarsRepo;
+import com.vojtechruzicka.javafxweaverexample.repo.UserList;
 import com.vojtechruzicka.javafxweaverexample.repo.UserRepo;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
@@ -15,11 +17,23 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 @FxmlView("admin-page.fxml")
 public class AdminPageController extends DefaultJavaFXController {
+
+    private final String uri = "http://localhost:8082/users";
+
+    @Autowired
+    private UserList userList;
 
     @Autowired
     private UserRepo userRepo;
@@ -60,13 +74,16 @@ public class AdminPageController extends DefaultJavaFXController {
     @FXML
     public TableColumn<User, String> username;
     @FXML
+
     private void initialize() {
-        userRepo.initData();
+        userRepo.init();
+        userRepo.init();
+        carsRepo.init();
+        ObservableList<User> users = userRepo.getRoleUserData();
 
-        User user = userRepo.usersData.get(0);
-        User admin = userRepo.usersData.get(1);
+        ObservableList<User> admins = userRepo.getRoleAdminData();
 
-        carsRepo.initData(user, admin);
+        ObservableList<Car> cars = carsRepo.getCars();
 
         idColumn.setCellValueFactory(new PropertyValueFactory<Car, Integer>("id"));
         brandColumn.setCellValueFactory(new PropertyValueFactory<Car, String>("brand"));
@@ -83,14 +100,14 @@ public class AdminPageController extends DefaultJavaFXController {
 
         usernameAdmin.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        FilteredList<Car> filteredData = getCarFilteredList(carsRepo.usersData, filterField);
+        FilteredList<Car> filteredData = getCarFilteredList(carsRepo.getCarsDataActiveCars(), filterField);
 
         SortedList<Car> sortedData = getSortedList(filteredData);
 
 
-        FilteredList<User> filteredDataUser = getCarFilteredListUser(userRepo.roleUserData, filterFieldUser);
+        FilteredList<User> filteredDataUser = getCarFilteredListUser(users, filterFieldUser);
 
-        FilteredList<User> filteredDataAdmin = getCarFilteredListUser(userRepo.roleAdminData, filterFieldAdmin);
+        FilteredList<User> filteredDataAdmin = getCarFilteredListUser(admins, filterFieldAdmin);
 
         SortedList<User> sortedDataUser = getSortedListUser(filteredDataUser);
 
@@ -102,6 +119,8 @@ public class AdminPageController extends DefaultJavaFXController {
         tableAllCars.setEditable(true);
         tableAllUsers.setEditable(true);
     }
+
+
 
     private FilteredList<User> getCarFilteredListUser(ObservableList<User> usersData, TextField filterFieldUser) {
         FilteredList<User> filteredData = getFilteredDataUser(usersData, filterFieldUser);
@@ -160,31 +179,46 @@ public class AdminPageController extends DefaultJavaFXController {
 
     @FXML
     private void handleDeleteCar() {
-        tableAllCars.setItems(carsRepo.usersData);
-        tableAllCars.getItems().remove(tableAllCars.getSelectionModel().getSelectedItem());
+        Map< String, String > params = new HashMap<String,String>();
+        params.put("id", String.valueOf(tableAllCars.getSelectionModel().getSelectedItem().getId()));
+        String.valueOf(tableAllCars.getSelectionModel().getSelectedItem());
+        restTemplate.delete("http://localhost:8082/car/{id}", params);
+        carsRepo.init();
     }
 
     @FXML
     private void handleDeleteUser() {
-        tableAllUsers.setItems(userRepo.roleUserData);
-        tableAllUsers.getItems().remove(tableAllUsers.getSelectionModel().getSelectedItem());
+        Map< String, String > params = new HashMap<String,String>();
+        params.put("id", String.valueOf(tableAllUsers.getSelectionModel().getSelectedItem().getId()));
+        String.valueOf(tableAllUsers.getSelectionModel().getSelectedItem());
+        restTemplate.delete("http://localhost:8082/users/{id}", params);
+        userRepo.init();
     }
 
     @FXML
     private void handleDeleteAdmin() {
-        tableAllAdmins.setItems(userRepo.roleAdminData);
-        tableAllAdmins.getItems().remove(tableAllAdmins.getSelectionModel().getSelectedItem());
+        Map< String, String > params = new HashMap<String,String>();
+        params.put("id", String.valueOf(tableAllAdmins.getSelectionModel().getSelectedItem().getId()));
+        String.valueOf(tableAllAdmins.getSelectionModel().getSelectedItem());
+        restTemplate.delete("http://localhost:8082/users/{id}", params);
+        userRepo.init();
     }
 
     @FXML
     public void onEditChange(TableColumn.CellEditEvent<Car, String> carStringCellEditEvent) {
         Car car = tableAllCars.getSelectionModel().getSelectedItem();
         car.setBrand(carStringCellEditEvent.getNewValue());
+        Map<String, String> params=  new HashMap<String, String>();
+        params.put("id", String.valueOf(car.getId()));
+        restTemplate.put("http://localhost:8082/car/update/{id}", car, params);
     }
 
     @FXML
     public void onEditChangeUser(TableColumn.CellEditEvent<Car, String> carStringCellEditEvent) {
         User user = tableAllUsers.getSelectionModel().getSelectedItem();
         user.setUsername(carStringCellEditEvent.getNewValue());
+        Map<String, String> params=  new HashMap<String, String>();
+        params.put("id", String.valueOf(user.getId()));
+        restTemplate.put("http://localhost:8082/user/update/{id}", user, params);
     }
 }

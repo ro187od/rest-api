@@ -26,9 +26,10 @@
                               <TableColumn prefWidth="148.00006103515625" fx:id="serialColumn" text="Серийный номер" />
                           </columns>
                         </TableView>
-                        <Button layoutX="466.0" layoutY="65.0" onAction="#handleCreateCar" mnemonicParsing="false" text="Button" />
-                         <Button layoutX="466.0" layoutY="122" onAction="#handleDeleteCar" mnemonicParsing="false" text="Button" />
-                         <TextField id="filterField" fx:id="filterFieldMyCars" layoutX="466.0" layoutY="175.0" />
+                        <Button layoutX="466.0" layoutY="65.0" onAction="#handleCreateCar" mnemonicParsing="false" text="Добавить" />
+                         <Button layoutX="466.0" layoutY="122" onAction="#handleDeleteCar" mnemonicParsing="false" text="Удалить" />
+                         <Button layoutX="466.0" layoutY="176.0" onAction="#activateParking" mnemonicParsing="false" text="Забрать" />
+                         <TextField id="filterField" fx:id="filterFieldMyCars" layoutX="466.0" layoutY="245.0" />
                      </children>
                   </AnchorPane>
             </content>

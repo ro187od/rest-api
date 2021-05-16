@@ -2,52 +2,68 @@ package com.vojtechruzicka.javafxweaverexample.repo;
 
 import com.vojtechruzicka.javafxweaverexample.controller.DefaultJavaFXController;
 import com.vojtechruzicka.javafxweaverexample.model.Car;
-import com.vojtechruzicka.javafxweaverexample.model.Role;
 import com.vojtechruzicka.javafxweaverexample.model.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Component
 public class CarsRepo extends DefaultJavaFXController {
 
-    public ObservableList<Car> usersData = FXCollections.observableArrayList();
-    public ObservableList<Car> usersDataActiveCars = FXCollections.observableArrayList();
-    public ObservableList<Car> myCars = FXCollections.observableArrayList();
+    private ResponseEntity<List<Car>> carsData;
+    private ObservableList<Car> carsDataActiveCars = FXCollections.observableArrayList();
+    private ResponseEntity<List<Car>> myCars;
+    private ObservableList<Car> carsMyData = FXCollections.observableArrayList();
 
     public CarsRepo(){}
 
-    public void initData(User user, User admin) {
-        usersData.add(new Car(1, "Bmw", "123q3", user));
-        usersData.add(new Car(2, "Audi", "123q3", user));;
-        usersData.add(new Car(3, "Tesla", "123q33", admin));
-        usersData.add(new Car(4, "Ford", "123q12", admin));
-        usersData();
-        myCars(user);
+    public void init(){
+        setCars();
+        setMyCars();
     }
 
-    public void myCars(User user) {
-        usersData.forEach(car -> {
-            if (car.getUser() == user) {
-                myCars.add(car);
+
+    public void setMyCars() {
+        carsMyData.clear();
+        myCars =
+                restTemplate.exchange("http://localhost:8082/cars/my",
+                        HttpMethod.GET, null,
+                        new ParameterizedTypeReference<List<Car>>() {
+                        });
+        myCars.getBody().forEach(car -> {
+                carsMyData.add(car);
+        });
+    }
+
+    public void setCars() {
+        carsDataActiveCars.clear();
+        carsData =
+                restTemplate.exchange("http://localhost:8082/cars",
+                        HttpMethod.GET, null,
+                        new ParameterizedTypeReference<List<Car>>() {
+                        });
+        carsData.getBody().forEach(car -> {
+            if (car.isActive() == true) {
+                carsDataActiveCars.add(car);
             }
         });
     }
 
-    public void usersData() {
-        usersDataActiveCars.clear();
-        usersData.forEach(car -> {
-            if (car.isActiveParking() == true) {
-                usersDataActiveCars.add(car);
-            }
-        });
+
+    public ObservableList<Car> getCars() {
+        return carsDataActiveCars;
     }
 
-    public Car findById(int id, User user) {
-        return usersDataActiveCars.stream().filter(car ->
-                car.getId() == id && car.getUser() == user)
-                .findFirst().map(car -> car).orElse(null);
+    public ObservableList<Car> getMyCars() {
+        return carsMyData;
+    }
+
+    public ObservableList<Car> getCarsDataActiveCars() {
+        return carsDataActiveCars;
     }
 }

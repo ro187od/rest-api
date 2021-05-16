@@ -23,8 +23,8 @@
                      <children>
                         <TableView fx:id="tableAllCars" prefHeight="371.0" prefWidth="459.0">
                           <columns>
-                            <TableColumn onEditCommit="#onEditChange" fx:id="idColumn" prefWidth="75.0" text="Id" />
-                            <TableColumn fx:id="brandColumn" prefWidth="75.0" text="Марка" />
+                            <TableColumn  fx:id="idColumn" prefWidth="75.0" text="Id" />
+                            <TableColumn onEditCommit="#onEditChange" fx:id="brandColumn" prefWidth="75.0" text="Марка" />
                               <TableColumn fx:id="serialColumn" prefWidth="133.5999755859375" text="Серийный номер" />
                               <TableColumn prefWidth="174.40001220703124" text="Владелец" />
                           </columns>
