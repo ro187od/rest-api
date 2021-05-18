@@ -32,16 +32,21 @@ public class CreateCarController extends DefaultJavaFXController{
 
     @FXML
     public void save(){
-        User user = restTemplate.getForObject("http://localhost:8082/users/my", User.class);
-        Car car = new Car(brandCars.getText(), user);
-        HttpEntity<Car> requestBody = new HttpEntity<>(car, getHttpHeaders());
-        Boolean result = restTemplate.postForObject(
-                "http://localhost:8082/car/create", requestBody, Boolean.class);
-        if(car != null){
-            carsRepo.setCars();
-            carsRepo.setMyCars();
-            Stage stage = (Stage) saveButtom.getScene().getWindow();
-            stage.close();
+        if(brandCars.getText().length() != 0){
+            User user = restTemplate.getForObject("http://localhost:8082/users/my", User.class);
+            Car car = new Car(brandCars.getText(), user);
+            HttpEntity<Car> requestBody = new HttpEntity<>(car, getHttpHeaders());
+            Boolean result = restTemplate.postForObject(
+                    "http://localhost:8082/car/create", requestBody, Boolean.class);
+            if(car != null){
+                carsRepo.setCars();
+                carsRepo.setMyCars();
+                Stage stage = (Stage) saveButtom.getScene().getWindow();
+                stage.close();
+            }
+        }else{
+            System.out.println("Вы не ввели марку автомобиля");
+            return;
         }
     }
     private HttpHeaders getHttpHeaders() {

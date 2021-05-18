@@ -28,7 +28,7 @@
                         </TableView>
                         <Button layoutX="466.0" layoutY="65.0" onAction="#handleCreateCar" mnemonicParsing="false" text="Добавить" />
                          <Button layoutX="466.0" layoutY="122" onAction="#handleDeleteCar" mnemonicParsing="false" text="Удалить" />
-                         <Button layoutX="466.0" layoutY="176.0" onAction="#activateParking" mnemonicParsing="false" text="Забрать" />
+                         <Button layoutX="466.0" layoutY="176.0" onAction="#activateParking" mnemonicParsing="false" text="На автостоянку" />
                          <TextField id="filterField" fx:id="filterFieldMyCars" layoutX="466.0" layoutY="245.0" />
                      </children>
                   </AnchorPane>

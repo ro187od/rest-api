@@ -6,6 +6,7 @@ import com.vojtechruzicka.javafxweaverexample.repo.UserRepo;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxWeaver;
@@ -27,6 +28,9 @@ public class RegistrationController extends DefaultJavaFXController {
     @FXML
     private TextField password;
 
+    @FXML
+    public Button saveButtom;
+
     @Autowired
     private RestTemplate restTemplate;
 
@@ -38,18 +42,20 @@ public class RegistrationController extends DefaultJavaFXController {
     private Stage stage;
 
     public void signup(){
+        if(username.getText().length() != 0 || password.getText().length() != 0) {
+            User user = new User(username.getText(), password.getText(), Role.USER);
+            HttpEntity<User> requestBody = new HttpEntity<>(user, getHttpHeaders());
+            Boolean result = restTemplate.postForObject(
+                    "http://localhost:8082/users/register", requestBody, Boolean.class);
 
-        User user = new User(username.getText(), password.getText(), Role.USER);
-        HttpEntity<User> requestBody = new HttpEntity<>(user, getHttpHeaders());
-        Boolean result = restTemplate.postForObject(
-                "http://localhost:8082/users/register", requestBody, Boolean.class);
-
-        if(user != null){
-            Parent root = fxWeaver.loadView(LoginController.class);
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
+            if (result == true) {
+                Stage stage = (Stage) saveButtom.getScene().getWindow();
+                stage.close();
+            }else{
+                System.out.println("Пользователь с таким логином уже существует");
+            }
+        }else{
+            System.out.println("Вы не ввели пароль или логин");
         }
     }
 

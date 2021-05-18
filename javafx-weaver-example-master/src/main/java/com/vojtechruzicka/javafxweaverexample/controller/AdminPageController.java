@@ -79,10 +79,9 @@ public class AdminPageController extends DefaultJavaFXController {
         userRepo.init();
         userRepo.init();
         carsRepo.init();
+
         ObservableList<User> users = userRepo.getRoleUserData();
-
         ObservableList<User> admins = userRepo.getRoleAdminData();
-
         ObservableList<Car> cars = carsRepo.getCars();
 
         idColumn.setCellValueFactory(new PropertyValueFactory<Car, Integer>("id"));
@@ -95,22 +94,15 @@ public class AdminPageController extends DefaultJavaFXController {
 
         brandColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         serialColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-
         username.setCellFactory(TextFieldTableCell.forTableColumn());
-
         usernameAdmin.setCellFactory(TextFieldTableCell.forTableColumn());
 
         FilteredList<Car> filteredData = getCarFilteredList(carsRepo.getCarsDataActiveCars(), filterField);
 
         SortedList<Car> sortedData = getSortedList(filteredData);
-
-
         FilteredList<User> filteredDataUser = getCarFilteredListUser(users, filterFieldUser);
-
         FilteredList<User> filteredDataAdmin = getCarFilteredListUser(admins, filterFieldAdmin);
-
         SortedList<User> sortedDataUser = getSortedListUser(filteredDataUser);
-
         SortedList<User> sortedDataAdmin = getSortedListUser(filteredDataAdmin);
 
         tableAllCars.setItems(sortedData);
