@@ -11,7 +11,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<Pane
+        fx:controller="com.vojtechruzicka.javafxweaverexample.controller.AdminPageController"
+        maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <TabPane prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -19,25 +21,17 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView prefHeight="371.0" prefWidth="459.0">
+                        <TableView fx:id="tableAllCars" prefHeight="371.0" prefWidth="459.0">
                           <columns>
-                            <TableColumn prefWidth="75.0" text="Id" />
-                            <TableColumn prefWidth="75.0" text="Марка" />
-                              <TableColumn prefWidth="133.5999755859375" text="Серийный номер" />
+                            <TableColumn  fx:id="idColumn" prefWidth="75.0" text="Id" />
+                            <TableColumn onEditCommit="#onEditChange" fx:id="brandColumn" prefWidth="75.0" text="Марка" />
+                              <TableColumn fx:id="serialColumn" prefWidth="133.5999755859375" text="Серийный номер" />
                               <TableColumn prefWidth="174.40001220703124" text="Владелец" />
                           </columns>
                         </TableView>
-                        <Button layoutX="459.0" layoutY="43.0" mnemonicParsing="false" text="Добавить" />
-                        <Button layoutX="459.0" layoutY="108.0" mnemonicParsing="false" text="Редактировать" />
-                        <Button layoutX="459.0" layoutY="173.0" mnemonicParsing="false" text="Удалить" />
-                        <Button layoutX="549.0" layoutY="246.0" mnemonicParsing="false" text="Поиск" />
-                        <MenuButton layoutX="459.0" layoutY="311.0" mnemonicParsing="false" text="Фильтр">
-                          <items>
-                            <MenuItem mnemonicParsing="false" text="Action 1" />
-                            <MenuItem mnemonicParsing="false" text="Action 2" />
-                          </items>
-                        </MenuButton>
-                        <TextField layoutX="460.0" layoutY="245.0" prefHeight="26.0" prefWidth="90.0" />
+                        <Button layoutX="459.0" layoutY="43.0" onAction="#handleCreateCar" mnemonicParsing="false" text="Добавить" />
+                        <Button layoutX="459.0" layoutY="173.0" onAction="#handleDeleteCar" mnemonicParsing="false" text="Удалить" />
+                        <TextField layoutX="460.0" fx:id="filterField" layoutY="245.0" prefHeight="26.0" prefWidth="90.0" />
                      </children>
                   </AnchorPane>
             </content>
@@ -46,17 +40,16 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView prefHeight="372.0" prefWidth="459.0">
+                        <TableView fx:id="tableAllUsers" prefHeight="372.0" prefWidth="459.0">
                           <columns>
-                            <TableColumn prefWidth="75.0" text="Id" />
-                            <TableColumn prefWidth="75.0" text="Имя" />
-                              <TableColumn prefWidth="120.79998779296875" text="Кол-во машин" />
+                            <TableColumn fx:id="username" onEditCommit="#onEditChangeUser" prefWidth="75.0" text="Имя" />
+                              <TableColumn fx:id="numberMachines" prefWidth="120.79998779296875" text="Кол-во машин" />
+                              <TableColumn fx:id="password" prefWidth="75.0" text="Имя " />
                           </columns>
                         </TableView>
-                        <Button layoutX="459.0" layoutY="36.0" mnemonicParsing="false" text="Добавить" />
-                        <Button layoutX="459.0" layoutY="104.0" mnemonicParsing="false" text="Редактировать" />
-                        <Button layoutX="459.0" layoutY="174.0" mnemonicParsing="false" text="Удалить" />
-                        <Button layoutX="459.0" layoutY="240.0" mnemonicParsing="false" text="Поиск" />
+                        <Button onAction="#handleCreateUser" layoutX="459.0" layoutY="36.0" mnemonicParsing="false" text="Добавить" />
+                        <Button layoutX="459.0" layoutY="174.0" onAction="#handleDeleteUser" mnemonicParsing="false" text="Удалить" />
+                         <TextField layoutX="460.0" fx:id="filterFieldUser" layoutY="245.0" prefHeight="26.0" prefWidth="90.0" />
                         <MenuButton layoutX="459.0" layoutY="304.0" mnemonicParsing="false" text="Фильтр">
                           <items>
                             <MenuItem mnemonicParsing="false" text="Action 1" />
@@ -71,18 +64,19 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView prefHeight="378.0" prefWidth="459.0">
+                        <TableView fx:id="tableAllAdmins" prefHeight="378.0" prefWidth="459.0">
                           <columns>
                             <TableColumn prefWidth="75.0" text="Id" />
-                            <TableColumn prefWidth="75.0" text="Имя" />
+                            <TableColumn fx:id="usernameAdmin" prefWidth="75.0" text="Имя" />
                               <TableColumn prefWidth="120.79998779296875" text="Кол-во машин" />
                           </columns>
                         </TableView>
-                        <Button layoutX="459.0" layoutY="34.0" mnemonicParsing="false" text="Добавить" />
+                        <Button layoutX="459.0" onAction="#handleCreateAdmin" layoutY="34.0" mnemonicParsing="false" text="Добавить" />
                         <Button layoutX="459.0" layoutY="106.0" mnemonicParsing="false" text="Редактировать" />
-                        <Button layoutX="459.0" layoutY="177.0" mnemonicParsing="false" text="Удалить" />
-                        <Button layoutX="459.0" layoutY="251.0" mnemonicParsing="false" text="Поиск" />
-                        <MenuButton layoutX="459.0" layoutY="313.0" mnemonicParsing="false" text="Фильтр">
+                        <Button layoutX="459.0" onAction="#handleDeleteAdmin" layoutY="177.0" mnemonicParsing="false" text="Удалить" />
+                         <Button layoutX="459.0" layoutY="251.0" mnemonicParsing="false" text="Поиск" />
+                         <TextField layoutX="460.0" fx:id="filterFieldAdmin" layoutY="245.0" prefHeight="26.0" prefWidth="90.0" />
+                         <MenuButton layoutX="459.0" layoutY="313.0" mnemonicParsing="false" text="Фильтр">
                           <items>
                             <MenuItem mnemonicParsing="false" text="Action 1" />
                             <MenuItem mnemonicParsing="false" text="Action 2" />

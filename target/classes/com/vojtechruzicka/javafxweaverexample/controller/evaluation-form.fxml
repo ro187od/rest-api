@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane
+        fx:controller="com.vojtechruzicka.javafxweaverexample.controller.EvaluationController"
+        maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="188.0" prefWidth="338.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="120.0" layoutY="38.0" text="Поставьте оценку" />
+      <Spinner editable="true"
+               min="0" max="10" initialValue="1" amountToStepBy="1" layoutX="95.0" fx:id="resultingAssessment" layoutY="94.0" />
+      <Button layoutX="251.0" layoutY="148.0" fx:id="closeButton" onAction="#sendResult" mnemonicParsing="false" text="Поставить" />
+   </children>
+</AnchorPane>

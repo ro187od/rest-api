@@ -1,9 +1,16 @@
 package com.vojtechruzicka.javafxweaverexample.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 
 public class User {
+    @JsonProperty("id")
     private Long id;
     @JsonProperty("username")
     private String username;
@@ -11,8 +18,10 @@ public class User {
     private String password;
     @JsonProperty("role")
     private Role role;
+    @JsonProperty("numberMachines")
+    private Integer numberMachines;
 
-    public User(){
+    private User(){
 
     }
 
@@ -20,6 +29,14 @@ public class User {
         this.username = username;
         this.password = password;
         this.role = role;
+    }
+
+    public Integer getNumberMachines() {
+        return numberMachines;
+    }
+
+    public void setNumberMachines(Integer numberMachines) {
+        this.numberMachines = numberMachines;
     }
 
     public Long getId() {

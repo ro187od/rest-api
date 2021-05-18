@@ -13,7 +13,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 @Component
 @FxmlView("login.fxml")
@@ -26,21 +25,23 @@ public class LoginController extends DefaultJavaFXController {
     private TextField password;
 
     public void login() {
-        //здесь должен быть валидатор ввода логина и пароля
-        //alertService + validationService
-        User user = new User(username.getText(), password.getText(), Role.USER);
-
-        // Data attached to the request.
-        HttpEntity<User> requestBody = new HttpEntity<>(user, getHttpHeaders());
-
-//        User result = restTemplate.postForObject(
-//                "http://localhost:8081/login", requestBody, User.class);
-//
-//        System.out.println(result);
-        User result = new User();
-        if (result != null){
-            showCurrentStageWindow(UserPageController.class, UserPageController.TITLE);
+        if(username.getText().length() != 0 || password.getText().length() != 0){
+            User user = new User(username.getText(), password.getText(), Role.USER);
+            HttpEntity<User> requestBody = new HttpEntity<>(user, getHttpHeaders());
+            User result = restTemplate.postForObject(
+                    "http://localhost:8082/users/login", requestBody, User.class);
+            if (result == null){
+                System.out.println("Пользователя нет в базе данных");
+                return;
+            }else if (result.getRole() == Role.ADMIN){
+                System.out.println(result.getUsername());
+                showCurrentStageWindow(AdminPageController.class, UserPageController.TITLE);
+            }else if (result.getRole() == Role.USER){
+                System.out.println(result.getUsername());
+                showCurrentStageWindow(UserPageController.class, UserPageController.TITLE);
+            }
         }
+        System.out.println("Неправильный логин или пароль");
     }
 
     private HttpHeaders getHttpHeaders() {

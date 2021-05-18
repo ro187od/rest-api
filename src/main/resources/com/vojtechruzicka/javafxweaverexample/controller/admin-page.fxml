@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane
+        fx:controller="com.vojtechruzicka.javafxweaverexample.controller.AdminPageController"
+        maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TabPane prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Машины">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="tableAllCars" prefHeight="371.0" prefWidth="459.0">
+                          <columns>
+                            <TableColumn  fx:id="idColumn" prefWidth="75.0" text="Id" />
+                            <TableColumn onEditCommit="#onEditChange" fx:id="brandColumn" prefWidth="75.0" text="Марка" />
+                              <TableColumn fx:id="serialColumn" prefWidth="133.5999755859375" text="Серийный номер" />
+                              <TableColumn prefWidth="174.40001220703124" text="Владелец" />
+                          </columns>
+                        </TableView>
+                        <Button layoutX="459.0" layoutY="43.0" onAction="#handleCreateCar" mnemonicParsing="false" text="Добавить" />
+                        <Button layoutX="459.0" layoutY="173.0" onAction="#handleDeleteCar" mnemonicParsing="false" text="Удалить" />
+                        <TextField layoutX="460.0" fx:id="filterField" layoutY="245.0" prefHeight="26.0" prefWidth="90.0" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Пользователи">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="tableAllUsers" prefHeight="372.0" prefWidth="459.0">
+                          <columns>
+                            <TableColumn fx:id="username" onEditCommit="#onEditChangeUser" prefWidth="75.0" text="Имя" />
+                              <TableColumn fx:id="numberMachines" prefWidth="120.79998779296875" text="Кол-во машин" />
+                              <TableColumn fx:id="password" prefWidth="75.0" text="Имя " />
+                          </columns>
+                        </TableView>
+                        <Button onAction="#handleCreateUser" layoutX="459.0" layoutY="36.0" mnemonicParsing="false" text="Добавить" />
+                        <Button layoutX="459.0" layoutY="174.0" onAction="#handleDeleteUser" mnemonicParsing="false" text="Удалить" />
+                         <TextField layoutX="460.0" fx:id="filterFieldUser" layoutY="245.0" prefHeight="26.0" prefWidth="90.0" />
+                        <MenuButton layoutX="459.0" layoutY="304.0" mnemonicParsing="false" text="Фильтр">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="Action 1" />
+                            <MenuItem mnemonicParsing="false" text="Action 2" />
+                          </items>
+                        </MenuButton>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+            <Tab text="Администраторы">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="tableAllAdmins" prefHeight="378.0" prefWidth="459.0">
+                          <columns>
+                            <TableColumn prefWidth="75.0" text="Id" />
+                            <TableColumn fx:id="usernameAdmin" prefWidth="75.0" text="Имя" />
+                              <TableColumn prefWidth="120.79998779296875" text="Кол-во машин" />
+                          </columns>
+                        </TableView>
+                        <Button layoutX="459.0" onAction="#handleCreateAdmin" layoutY="34.0" mnemonicParsing="false" text="Добавить" />
+                        <Button layoutX="459.0" layoutY="106.0" mnemonicParsing="false" text="Редактировать" />
+                        <Button layoutX="459.0" onAction="#handleDeleteAdmin" layoutY="177.0" mnemonicParsing="false" text="Удалить" />
+                         <Button layoutX="459.0" layoutY="251.0" mnemonicParsing="false" text="Поиск" />
+                         <TextField layoutX="460.0" fx:id="filterFieldAdmin" layoutY="245.0" prefHeight="26.0" prefWidth="90.0" />
+                         <MenuButton layoutX="459.0" layoutY="313.0" mnemonicParsing="false" text="Фильтр">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="Action 1" />
+                            <MenuItem mnemonicParsing="false" text="Action 2" />
+                          </items>
+                        </MenuButton>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</Pane>
