@@ -34,16 +34,20 @@ public class CreateAdminController extends DefaultJavaFXController {
     public void createAdmin() {
         String login = textFieldLogin.getText();
         String password = passwordFieldPassword.getText();
-
-        if (!validationService.validateLoginAndPassword(login, password)) {
-            alertService.showAlert(AlertService.AlertType.PASSWORD_REGEX_WARNING);
-        } else {
-            User admin = new User(login, password, Role.ADMIN, 0);
-            HttpEntity<User> createAdminRequestBody = new HttpEntity<>(admin, getJsonHttpHeaders());
-            restClient.postForObject(REST_SERVER_URL + "users/register", createAdminRequestBody, Boolean.class);
-            userRepo.setAdmins();
-            Stage stage = (Stage) textFieldLogin.getScene().getWindow();
-            stage.close();
+        try{
+            if (!validationService.validateLoginAndPassword(login, password)) {
+                alertService.showAlert(AlertService.AlertType.PASSWORD_REGEX_WARNING);
+            } else {
+                User admin = new User(login, password, Role.ADMIN, 0);
+                HttpEntity<User> createAdminRequestBody = new HttpEntity<>(admin, getJsonHttpHeaders());
+                restClient.postForObject(REST_SERVER_URL + "users/register", createAdminRequestBody, Boolean.class);
+                userRepo.setAdmins();
+                Stage stage = (Stage) textFieldLogin.getScene().getWindow();
+                stage.close();
+            }
+        }catch (Exception e){
+            alertService.showAlert(AlertService.AlertType.NO_CONNECTED);
         }
+
     }
 }

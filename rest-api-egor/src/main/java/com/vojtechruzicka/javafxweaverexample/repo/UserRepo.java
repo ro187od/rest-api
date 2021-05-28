@@ -53,4 +53,9 @@ public class UserRepo extends DefaultJavaFXController {
                 roleAdminData.add(user);
         });
     }
+
+    public User getMyUser() {
+        User user = restClient.getForObject("http://localhost:8083/users/my", User.class);
+        return user;
+    }
 }

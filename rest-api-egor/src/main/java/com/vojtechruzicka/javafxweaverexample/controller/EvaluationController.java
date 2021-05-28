@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @FxmlView("evaluation-form.fxml")
 public class EvaluationController extends DefaultJavaFXController {
 
-    protected final static String TITLE = "Метод экспертной оценки";
+    protected final static String TITLE = "Поставьте оценку автостоянке";
 
     @Autowired
     private CarsRepo carsRepo;

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Text?>
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vojtechruzicka.javafxweaverexample.controller.InfoMethodController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="600.8" minWidth="10.0" prefWidth="600.8" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="295.20001220703125" minWidth="0.0" prefWidth="0.0" />
+  </columnConstraints>
+  <rowConstraints>
+      <RowConstraints maxHeight="349.2000030517578" minHeight="10.0" prefHeight="349.2000030517578" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="194.00000610351563" minHeight="10.0" prefHeight="51.59999694824222" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <Button mnemonicParsing="false" onAction="#reportToFile" text="Создать файл-отчёт" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets left="350.0" />
+         </GridPane.margin></Button>
+
+      <Text fx:id="textInfo" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+      <Button fx:id="closeButton" mnemonicParsing="false" onAction="#close" text="Закрыть" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets left="515.0" />
+         </GridPane.margin>
+      </Button>
+   </children>
+</GridPane>

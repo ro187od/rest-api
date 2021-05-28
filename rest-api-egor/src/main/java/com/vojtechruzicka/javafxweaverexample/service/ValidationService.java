@@ -9,6 +9,7 @@ public class ValidationService {
 
     private final PasswordValidationService passwordValidationService;
     private final LoginValidationService loginValidationService;
+    private final SerialNumberValidationService serialNumberValidationService;
 
 
     public boolean validateLoginAndPassword(String login, String password) {
@@ -22,7 +23,11 @@ public class ValidationService {
                 money instanceof Integer;
     }
 
-    public boolean validateEmptyLines(String valueOne, String valueTwo) {
-        return !valueOne.isEmpty() && !valueTwo.isEmpty();
+    public boolean validateEmptyCar(String brand, String serialNumber) {
+        return !brand.isEmpty() && serialNumberValidationService.isValidSerialNumber(serialNumber);
+    }
+
+    public boolean validateEmptyLines(String login, String password) {
+        return !password.isEmpty() && !login.isEmpty();
     }
 }

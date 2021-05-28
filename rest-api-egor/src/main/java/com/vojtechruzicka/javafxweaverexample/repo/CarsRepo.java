@@ -44,7 +44,7 @@ public class CarsRepo extends DefaultJavaFXController {
     public void setCars() {
         carsDataParkingCars.clear();
         carsData =
-                restClient.exchange(REST_SERVER_URL + "parking/1/cars",
+                restClient.exchange(REST_SERVER_URL + "parking/3/cars",
                         HttpMethod.GET, null,
                         new ParameterizedTypeReference<List<Car>>() {
                         });

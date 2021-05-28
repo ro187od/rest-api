@@ -9,12 +9,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lombok.RequiredArgsConstructor;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 @Component
 @FxmlView("login.fxml")
@@ -24,10 +28,13 @@ public class LoginController extends DefaultJavaFXController {
     protected final static String TITLE = "Вход";
 
     @FXML
+    private Button signIn;
+
+    @FXML
     private TextField textFieldLogin;
 
     @FXML
-    private TextField textFieldPassword;
+    private PasswordField textFieldPassword;
 
     private final ValidationService validationService;
     private final AlertService alertService;
@@ -41,16 +48,27 @@ public class LoginController extends DefaultJavaFXController {
         } else {
             User user = new User(login, password, Role.USER);
             HttpEntity<User> requestBody = new HttpEntity<>(user, getJsonHttpHeaders());
-            UserStatus result = restClient.postForObject(REST_SERVER_URL + "/login", requestBody, UserStatus.class);
-
-            if (UserStatus.UNKNOWER.equals(result)) {
-                alertService.showAlert(AlertService.AlertType.USER_NOT_FOUND);
-            } else if (UserStatus.CREATED_ADMIN.equals(result)) {
-                showCurrentStageWindow (AdminPageController.class, AdminPageController.TITLE);
-            } else if (UserStatus.CREATED_USER.equals(result)) {
-                showCurrentStageWindow (UserPageController.class, UserPageController.TITLE);
+            try{
+                UserStatus result = restClient.postForObject(REST_SERVER_URL + "/login", requestBody, UserStatus.class);
+                if (UserStatus.UNKNOWER.equals(result)) {
+                    alertService.showAlert(AlertService.AlertType.USER_NOT_FOUND);
+                } else if (UserStatus.CREATED_ADMIN.equals(result)) {
+                    setSignIn(AdminPageController.class);
+                } else if (UserStatus.CREATED_USER.equals(result)) {
+                    setSignIn(UserPageController.class);
+                }else if(UserStatus.INCORRECT_DATA.equals(result)){
+                    alertService.showAlert(AlertService.AlertType.INCORRECT_DATA);
+                }
+            }catch (Exception e){
+                alertService.showAlert(AlertService.AlertType.NO_CONNECTED);
             }
         }
+    }
+
+    private void setSignIn(Class<? extends DefaultJavaFXController> controllerClass) {
+        Stage stage = (Stage) signIn.getScene().getWindow();
+        stage.close();
+        showNewStageWindow (controllerClass);
     }
 
     public void signup(ActionEvent actionEvent) {

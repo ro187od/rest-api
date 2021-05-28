@@ -21,6 +21,9 @@ import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
@@ -31,7 +34,7 @@ import java.util.TreeMap;
 @FxmlView("admin-page.fxml")
 public class AdminPageController extends DefaultJavaFXController {
 
-    protected final static String TITLE = "Окно админа";
+    protected final static String TITLE = "Окно урпавляющего автостоянки";
 
     @FXML
     private TextField jTextField9;
@@ -77,6 +80,8 @@ public class AdminPageController extends DefaultJavaFXController {
 
     @FXML
     private Button logoutButton;
+
+
 
     @FXML
     private TextField filterFieldCar;
@@ -147,7 +152,7 @@ public class AdminPageController extends DefaultJavaFXController {
         username.setCellFactory(TextFieldTableCell.forTableColumn());
         usernameAdmin.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        FilteredList<Car> filteredData = getCarFilteredList(carsRepo.getCarsAllData(), filterFieldCar);
+        FilteredList<Car> filteredData = getCarFilteredList(carsRepo.getCarsDataParkingCars(), filterFieldCar);
         FilteredList<User> filteredDataUser = getCarFilteredListUser(userRepo.getRoleUserData(), filterFieldUser);
         FilteredList<User> filteredDataAdmin = getCarFilteredListUser(userRepo.getRoleAdminData(), filterFieldAdmin);
 
@@ -210,20 +215,29 @@ public class AdminPageController extends DefaultJavaFXController {
     }
 
     private void deleteUserOrAdmin(TableView<User> table) {
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("id", String.valueOf(table.getSelectionModel().getSelectedItem().getId()));
-        String.valueOf(table.getSelectionModel().getSelectedItem());
-        restClient.delete(REST_SERVER_URL + "users/{id}", params);
-        initRepo();
+        try{
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("id", String.valueOf(table.getSelectionModel().getSelectedItem().getId()));
+            String.valueOf(table.getSelectionModel().getSelectedItem());
+            restClient.delete(REST_SERVER_URL + "users/{id}", params);
+            initRepo();
+        }catch (Exception e){
+            alertService.showAlert(AlertService.AlertType.NO_CONNECTED);
+        }
+
     }
 
     @FXML
     public void onEditChangeUser(TableColumn.CellEditEvent<Car, String> carStringCellEditEvent) {
-        User user = tableAllUsers.getSelectionModel().getSelectedItem();
-        user.setUsername(carStringCellEditEvent.getNewValue());
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("id", String.valueOf(user.getId()));
-        restClient.put(REST_SERVER_URL + "user/update/{id}", user, params);
+        try{
+            User user = tableAllUsers.getSelectionModel().getSelectedItem();
+            user.setUsername(carStringCellEditEvent.getNewValue());
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("id", String.valueOf(user.getId()));
+            restClient.put(REST_SERVER_URL + "user/update/{id}", user, params);
+        }catch (Exception e){
+            alertService.showAlert(AlertService.AlertType.NO_CONNECTED);
+        }
     }
 
     @FXML
@@ -294,10 +308,10 @@ public class AdminPageController extends DefaultJavaFXController {
                 alertService.showAlert(AlertService.AlertType.EXPAND_PARKING);
             }else if(C2 > C1 && C2 > C3){
                 saleParking();
-                alertService.showAlert(AlertService.AlertType.REMOVING_USERS);
+                alertService.showAlert(AlertService.AlertType.COST_BY_TWO);
             }else if(C3 > C1 && C3 > C2){
-                addFloorParking();
-                alertService.showAlert(AlertService.AlertType.REMOVING_CARS_FROM_PARKING);
+                expandParking();
+                alertService.showAlert(AlertService.AlertType.EXPAND_PARKING_N_SEATS);
             }else{
                 alertService.showAlert(AlertService.AlertType.SIMILAR_GOALS);
             }
@@ -313,15 +327,34 @@ public class AdminPageController extends DefaultJavaFXController {
     }
 
     private void addFloorParking() {
-        restClient.put(REST_SERVER_URL + "parking/add_floor", parking);
+        try{
+            restClient.put(REST_SERVER_URL + "parking/add_floor", parking);
+        }catch (Exception e){
+            alertService.showAlert(AlertService.AlertType.NO_CONNECTED);
+        }
     }
 
     private void expandParking() {
-        restClient.put(REST_SERVER_URL + "parking/expand", parking);
+        try{
+            restClient.put(REST_SERVER_URL + "parking/expand", parking);
+        }catch (Exception e){
+            alertService.showAlert(AlertService.AlertType.NO_CONNECTED);
+        }
     }
 
     private void saleParking() {
-        restClient.put(REST_SERVER_URL + "parking/sale", parking);
+
+        try{
+            restClient.put(REST_SERVER_URL + "parking/sale", parking);
+        }catch (Exception e){
+            alertService.showAlert(AlertService.AlertType.NO_CONNECTED);
+        }
     }
 
+
+
+    @FXML
+    public void descriptionMethod(ActionEvent actionEvent) {
+            showNewStageWindow(InfoMethodController.class);
+    }
 }

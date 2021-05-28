@@ -41,16 +41,21 @@ public class CreateUserController extends DefaultJavaFXController{
         String password = textFieldPassword.getText();
         Integer money = Integer.valueOf(textFieldMoney.getText());
 
-        if (!validationService.validateCreateUser(login, password, money)){
-            alertService.showAlert(AlertService.AlertType.PASSWORD_REGEX_WARNING);
-        }else{
-            User user = new User(login, password, Role.USER, money);
-            HttpEntity<User> requestBody = new HttpEntity<>(user, getJsonHttpHeaders());
-            Boolean result = restClient.postForObject(
-                    REST_SERVER_URL + "users/register", requestBody, Boolean.class);
-            userRepo.setUsers();
-            Stage stage = (Stage) saveButtomUser.getScene().getWindow();
-            stage.close();
+        try{
+            if (!validationService.validateCreateUser(login, password, money)){
+                alertService.showAlert(AlertService.AlertType.PASSWORD_REGEX_WARNING);
+            }else{
+                User user = new User(login, password, Role.USER, money);
+                HttpEntity<User> requestBody = new HttpEntity<>(user, getJsonHttpHeaders());
+                Boolean result = restClient.postForObject(
+                        REST_SERVER_URL + "users/register", requestBody, Boolean.class);
+                userRepo.setUsers();
+                Stage stage = (Stage) saveButtomUser.getScene().getWindow();
+                stage.close();
+            }
+        }catch (Exception e){
+            alertService.showAlert(AlertService.AlertType.NO_CONNECTED);
         }
+
     }
 }

@@ -6,6 +6,7 @@ import com.vojtechruzicka.javafxweaverexample.repo.UserRepo;
 import com.vojtechruzicka.javafxweaverexample.service.AlertService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxWeaver;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import java.lang.reflect.Executable;
 
 @Component
 @FxmlView("registration.fxml")
@@ -25,7 +28,7 @@ public class SignUpController extends DefaultJavaFXController {
     private TextField textFieldLogin;
 
     @FXML
-    private TextField textFieldPassword;
+    private PasswordField textFieldPassword;
 
     @FXML
     private TextField textFieldMoney;
@@ -48,20 +51,25 @@ public class SignUpController extends DefaultJavaFXController {
         String password = textFieldPassword.getText();
         Integer money = Integer.valueOf(textFieldMoney.getText());
 
-        if (!validationService.validateCreateUser(login, password, money)) {
-            alertService.showAlert(AlertService.AlertType.PASSWORD_REGEX_WARNING);
-        } else {
-            User user = new User(login, password, Role.USER, money);
-            HttpEntity<User> requestBody = new HttpEntity<>(user, getJsonHttpHeaders());
-            Boolean result = restTemplate.postForObject(
-                    REST_SERVER_URL + "users/register", requestBody, Boolean.class);
+        try {
+            if (!validationService.validateCreateUser(login, password, money)) {
+                alertService.showAlert(AlertService.AlertType.PASSWORD_REGEX_WARNING);
+            } else {
+                User user = new User(login, password, Role.USER, money);
+                HttpEntity<User> requestBody = new HttpEntity<>(user, getJsonHttpHeaders());
+                Boolean result = restTemplate.postForObject(
+                        REST_SERVER_URL + "users/register", requestBody, Boolean.class);
 
-            if (result) {
-                Stage stage = (Stage) buttonSignUp.getScene().getWindow();
-                stage.close();
-            }else{
-                System.out.println("Пользователь с таким логином уже существует");
+                if (result) {
+                    Stage stage = (Stage) buttonSignUp.getScene().getWindow();
+                    stage.close();
+                }else{
+                    alertService.showAlert(AlertService.AlertType.LOGIN_IS_BUSY);
+                }
             }
+        }catch (Exception e){
+            alertService.showAlert(AlertService.AlertType.NO_CONNECTED);
         }
+
     }
 }

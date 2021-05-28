@@ -37,19 +37,24 @@ public class CreateCarController extends DefaultJavaFXController{
         String brand = textFieldBrandCars.getText();
         String serialNumber = textFieldSerialNumberCar.getText();
 
-        if(!validationService.validateEmptyLines(brand, serialNumber)) {
+        if(!validationService.validateEmptyCar(brand, serialNumber)) {
             alertService.showAlert(AlertService.AlertType.BRAND_IS_EMPTY);
         }else{
-            User user = restClient.getForObject(REST_SERVER_URL + "users/my", User.class);
-            Car car = new Car(brand, serialNumber, user);
-            HttpEntity<Car> requestBody = new HttpEntity<>(car, getJsonHttpHeaders());
-            Boolean result = restClient.postForObject(
-                    REST_SERVER_URL + "car/create", requestBody, Boolean.class);
-            carsRepo.setCars();
-            carsRepo.setMyCars();
-            initRepo();
-            Stage stage = (Stage) saveButtomCar.getScene().getWindow();
-            stage.close();
+            try {
+
+                User user = restClient.getForObject(REST_SERVER_URL + "users/my", User.class);
+                Car car = new Car(brand, serialNumber, user);
+                HttpEntity<Car> requestBody = new HttpEntity<>(car, getJsonHttpHeaders());
+                Boolean result = restClient.postForObject(
+                        REST_SERVER_URL + "car/create", requestBody, Boolean.class);
+                carsRepo.setCars();
+                carsRepo.setMyCars();
+                initRepo();
+                Stage stage = (Stage) saveButtomCar.getScene().getWindow();
+                stage.close();
+            }catch (Exception e){
+                alertService.showAlert(AlertService.AlertType.NO_CONNECTED);
+            }
         }
     }
 }

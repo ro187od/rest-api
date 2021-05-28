@@ -1,6 +1,7 @@
 package com.vojtechruzicka.javafxweaverexample.controller;
 
 import com.vojtechruzicka.javafxweaverexample.model.Car;
+import com.vojtechruzicka.javafxweaverexample.model.User;
 import com.vojtechruzicka.javafxweaverexample.repo.CarsRepo;
 import com.vojtechruzicka.javafxweaverexample.repo.UserRepo;
 import com.vojtechruzicka.javafxweaverexample.service.AlertService;

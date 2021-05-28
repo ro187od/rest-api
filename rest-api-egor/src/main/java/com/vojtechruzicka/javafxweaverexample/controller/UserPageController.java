@@ -2,6 +2,7 @@ package com.vojtechruzicka.javafxweaverexample.controller;
 
 import com.vojtechruzicka.javafxweaverexample.model.Car;
 import com.vojtechruzicka.javafxweaverexample.model.Parking;
+import com.vojtechruzicka.javafxweaverexample.model.User;
 import com.vojtechruzicka.javafxweaverexample.repo.CarsRepo;
 import com.vojtechruzicka.javafxweaverexample.repo.UserRepo;
 import com.vojtechruzicka.javafxweaverexample.service.AlertService;
@@ -72,14 +73,14 @@ public class UserPageController extends DefaultJavaFXController  {
     @FXML
     private TableColumn<Car, String> scope;
 
+    private User activeUser;
 
     @FXML
     private void initialize() {
         initRepo();
 
-        parking = restClient.getForObject(REST_SERVER_URL + "parking/1", Parking.class);
+        parking = restClient.getForObject(REST_SERVER_URL + "parking/3", Parking.class);
 
-        System.out.println(parking);
         ObservableList<Car> myCars = carsRepo.getMyCars();
         ObservableList<Car> carsInParkong = carsRepo.getCarsDataParkingCars();
 
@@ -100,6 +101,8 @@ public class UserPageController extends DefaultJavaFXController  {
         tableMyCars.setItems(sortedDataMyCars);
         tableAllCars.setItems(sortedData);
         tableMyCars.setEditable(true);
+
+        activeUser = userRepo.getMyUser();
     }
 
     private SortedList<Car> getSortedList(FilteredList<Car> filteredData) {
@@ -119,43 +122,51 @@ public class UserPageController extends DefaultJavaFXController  {
     }
 
     @FXML
-    private void arithmeticMean() {
-        showNewStageWindow(ArithmeticMeanController.class);
-    }
-
-    @FXML
     public void handleCreateCar() {
         showNewStageWindow(CreateCarController.class);
     }
 
     @FXML
     private void deactivateParking() {
-        Car car = tableAllCars.getSelectionModel().getSelectedItem();
-        Map< String, String > params = new HashMap<String,String>();
-        params.put("id_parking","1");
-        params.put("id_car", String.valueOf(car.getId()));
-        restClient.delete(REST_SERVER_URL + "parking/{id_parking}/car/{id_car}", params);
-        EvaluationController.setCar(car);
-        showNewStageWindow(EvaluationController.class);
+        try{
+            Car car = tableAllCars.getSelectionModel().getSelectedItem();
+            if(!car.getOwner().getUsername().equals(activeUser.getUsername())){
+                alertService.showAlert(AlertService.AlertType.ACCESS_ERROR);
+            }else{
+                Map< String, String > params = new HashMap<String,String>();
+                params.put("id_parking","3");
+                params.put("id_car", String.valueOf(car.getId()));
+                restClient.delete(REST_SERVER_URL + "parking/{id_parking}/car/{id_car}", params);
+                EvaluationController.setCar(car);
+                showNewStageWindow(EvaluationController.class);
+            }
+        }catch (Exception e){
+            alertService.showAlert(AlertService.AlertType.NO_CONNECTED);
+        }
     }
 
     @FXML
     private void activateParking() {
-        if(parking.getSizeParking() > parking.getCars().size()){
-            Car car = tableMyCars.getSelectionModel().getSelectedItem();
-            if(car.getOwner().getMoneyInAccount() < parking.getCostParking()){
-                alertService.showAlert(AlertService.AlertType.PARKING_ERROR_BALANCE);
-            }else if(parking.getCars().indexOf(car.getId()) == car.getId()){
-                alertService.showAlert(AlertService.AlertType.CAR_ALREADY_IN_PARK);
-            }else {
-                Map<String, String> params=  new HashMap<String, String>();
-                params.put("id", String.valueOf(tableMyCars.getSelectionModel().getSelectedItem().getId()));
-                restClient.put(REST_SERVER_URL + "parking/add/car/{id}", car, params);
-                initRepo();
+        try{
+            if(parking.getSizeParking() > parking.getCars().size()){
+                Car car = tableMyCars.getSelectionModel().getSelectedItem();
+                if(car.getOwner().getMoneyInAccount() < parking.getCostParking()){
+                    alertService.showAlert(AlertService.AlertType.PARKING_ERROR_BALANCE);
+                }else if(parking.getCars().indexOf(car.getId()) == car.getId()){
+                    alertService.showAlert(AlertService.AlertType.CAR_ALREADY_IN_PARK);
+                }else {
+                    Map<String, String> params=  new HashMap<String, String>();
+                    params.put("id", String.valueOf(tableMyCars.getSelectionModel().getSelectedItem().getId()));
+                    restClient.put(REST_SERVER_URL + "parking/add/car/{id}", car, params);
+                    initRepo();
+                }
+            }else{
+                alertService.showAlert(AlertService.AlertType.PARKING_ERROR);
             }
-        }else{
-            alertService.showAlert(AlertService.AlertType.PARKING_ERROR);
+        }catch (Exception e){
+            alertService.showAlert(AlertService.AlertType.NO_CONNECTED);
         }
+
     }
 
     public void logout(ActionEvent actionEvent) {
@@ -164,4 +175,13 @@ public class UserPageController extends DefaultJavaFXController  {
         showNewStageWindow(LoginController.class);
     }
 
+    public void cashIn(ActionEvent actionEvent) {
+        try {
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("id", String.valueOf(activeUser.getId()));
+            restClient.put(REST_SERVER_URL + "user/update/{id}", activeUser, params);
+        }catch (Exception e){
+            alertService.showAlert(AlertService.AlertType.NO_CONNECTED);
+        }
+    }
 }
