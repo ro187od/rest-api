@@ -66,9 +66,9 @@ public class LoginController extends DefaultJavaFXController {
     }
 
     private void setSignIn(Class<? extends DefaultJavaFXController> controllerClass) {
+        showNewStageWindow (controllerClass);
         Stage stage = (Stage) signIn.getScene().getWindow();
         stage.close();
-        showNewStageWindow (controllerClass);
     }
 
     public void signup(ActionEvent actionEvent) {

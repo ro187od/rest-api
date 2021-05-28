@@ -49,7 +49,7 @@
                             <TableColumn fx:id="username" onEditCommit="#onEditChangeUser" prefWidth="75.0" text="Логин" />
                               <TableColumn fx:id="userPassword" prefWidth="75.0" text="Пароль" />
                               <TableColumn fx:id="numberMachines" prefWidth="190.79998779296875" text="Количество машин" />
-                              <TableColumn fx:id="moneyUser" prefWidth="120.79998779296875" text="Баланс" />
+                              <TableColumn  fx:id="moneyUser" onEditCommit="#onEditChangeUserBalance" prefWidth="120.79998779296875" text="Баланс" />
                           </columns>
                         </TableView>
                         <Button layoutX="474.0" layoutY="27.0" mnemonicParsing="false" onAction="#handleCreateUser" prefHeight="34.0" prefWidth="125.0" text="Добавить" />

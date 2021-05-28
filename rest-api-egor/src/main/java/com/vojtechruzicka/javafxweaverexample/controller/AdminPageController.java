@@ -16,7 +16,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.converter.IntegerStringConverter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -102,7 +104,7 @@ public class AdminPageController extends DefaultJavaFXController {
     public TableColumn<User, String> usernameAdmin;
 
     @FXML
-    public TableColumn<User, String> moneyUser;
+    public TableColumn<User, Integer> moneyUser;
 
     @FXML
     private TableView<User> tableAllAdmins;
@@ -143,7 +145,7 @@ public class AdminPageController extends DefaultJavaFXController {
         numberMachines.setCellValueFactory(new PropertyValueFactory<User, String>("numberMachines"));
         usernameAdmin.setCellValueFactory(new PropertyValueFactory<User, String>("username"));
         username.setCellValueFactory(new PropertyValueFactory<User, String>("username"));
-        moneyUser.setCellValueFactory(new PropertyValueFactory<User, String>("moneyInAccount"));
+        moneyUser.setCellValueFactory(new PropertyValueFactory<User, Integer>("moneyInAccount"));
         userPassword.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getPassword()));
         idColumn.setCellValueFactory(new PropertyValueFactory<User, String>("id"));
 
@@ -151,6 +153,7 @@ public class AdminPageController extends DefaultJavaFXController {
         serialColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         username.setCellFactory(TextFieldTableCell.forTableColumn());
         usernameAdmin.setCellFactory(TextFieldTableCell.forTableColumn());
+        moneyUser.setCellFactory(TextFieldTableCell.forTableColumn((new IntegerStringConverter())));
 
         FilteredList<Car> filteredData = getCarFilteredList(carsRepo.getCarsDataParkingCars(), filterFieldCar);
         FilteredList<User> filteredDataUser = getCarFilteredListUser(userRepo.getRoleUserData(), filterFieldUser);
@@ -241,6 +244,19 @@ public class AdminPageController extends DefaultJavaFXController {
     }
 
     @FXML
+    public void onEditChangeUserBalance(TableColumn.CellEditEvent<Car, Integer> carIntegerCellEditEvent) {
+        try{
+            User user = tableAllUsers.getSelectionModel().getSelectedItem();
+            user.setMoneyInAccount(carIntegerCellEditEvent.getNewValue());
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("id", String.valueOf(user.getId()));
+            restClient.put(REST_SERVER_URL + "user/update/{id}", user, params);
+        }catch (Exception e){
+            alertService.showAlert(AlertService.AlertType.NO_CONNECTED);
+        }
+    }
+
+    @FXML
     public void onEditChange(TableColumn.CellEditEvent<Car, String> carStringCellEditEvent) {
         updateCar(carStringCellEditEvent, tableAllCars);
     }
@@ -306,12 +322,18 @@ public class AdminPageController extends DefaultJavaFXController {
             if(C1 > C2 && C1 > C3){
                 addFloorParking();
                 alertService.showAlert(AlertService.AlertType.EXPAND_PARKING);
+                reportToFile(new Text("• Цель Z1 оказалась наулучшей альтернативой\n" +
+                                        "• Автостоянка расширена в 2 раза."));
             }else if(C2 > C1 && C2 > C3){
                 saleParking();
                 alertService.showAlert(AlertService.AlertType.COST_BY_TWO);
+                reportToFile(new Text("• Цель Z2 оказалась наулучшей альтернативой\n" +
+                                        "• Стоимость парковки уменьшена в 2 раза."));
             }else if(C3 > C1 && C3 > C2){
                 expandParking();
                 alertService.showAlert(AlertService.AlertType.EXPAND_PARKING_N_SEATS);
+                reportToFile(new Text("• Цель Z3 оказалась наулучшей альтернативой\n" +
+                                        "• Автостоянка расширена на 5 мест."));
             }else{
                 alertService.showAlert(AlertService.AlertType.SIMILAR_GOALS);
             }
@@ -324,6 +346,21 @@ public class AdminPageController extends DefaultJavaFXController {
                 jTextField10.setText(String.valueOf(sorted_map));
             }
         }
+    }
+
+    public void reportToFile(Text textInfo) {
+
+        try(FileWriter fos=new FileWriter("method_report.txt"))
+        {
+            // перевод строки в байты
+
+            fos.write(textInfo.getText());
+        }
+        catch(IOException ex){
+
+            System.out.println(ex.getMessage());
+        }
+        System.out.println("The file has been written");
     }
 
     private void addFloorParking() {

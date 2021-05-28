@@ -12,10 +12,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
@@ -31,6 +28,8 @@ import java.util.Map;
 public class UserPageController extends DefaultJavaFXController  {
 
     public static final String TITLE = "Пользовательское окно";
+    @FXML
+    private Label amountInAccount;
 
     @Autowired
     private CarsRepo carsRepo;
@@ -103,6 +102,7 @@ public class UserPageController extends DefaultJavaFXController  {
         tableMyCars.setEditable(true);
 
         activeUser = userRepo.getMyUser();
+        amountInAccount.setText(String.valueOf(activeUser.getMoneyInAccount()));
     }
 
     private SortedList<Car> getSortedList(FilteredList<Car> filteredData) {
@@ -179,7 +179,9 @@ public class UserPageController extends DefaultJavaFXController  {
         try {
             Map<String, String> params = new HashMap<String, String>();
             params.put("id", String.valueOf(activeUser.getId()));
-            restClient.put(REST_SERVER_URL + "user/update/{id}", activeUser, params);
+            restClient.put(REST_SERVER_URL + "user/cashIn/{id}", activeUser, params);
+            activeUser = userRepo.getMyUser();
+            amountInAccount.setText(String.valueOf(activeUser.getMoneyInAccount()));
         }catch (Exception e){
             alertService.showAlert(AlertService.AlertType.NO_CONNECTED);
         }
